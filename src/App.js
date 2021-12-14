@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { fakeApiCall } from "./api.service";
+import "./App.css";
 
 function App() {
+  const [counter, setCounter] = useState(0);
+  const [data, setData] = useState([]);
+  const onClearData = () => {
+    setData([]);
+  };
+  useEffect(() => {
+    setTimeout(() => setCounter(5), 5000);
+  }, []);
+  useEffect(() => {
+    fakeApiCall(counter).then((data) => setData(data));
+  }, [counter]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1
+        className="counter-heading"
+        style={{ background: "lightblue", color: "grey" }}
+      >
+        Current count is {counter}
+      </h1>
+      <div className="counter-input">
+        <input
+          type="number"
+          value={counter}
+          onChange={(e) => {
+            if (e.target.value) setCounter(parseFloat(e.target.value));
+          }}
+        />
+        <button onClick={() => setCounter(0)}>Reset counter</button>
+        <button onClick={() => setCounter(counter + 7)}>+7</button>
+      </div>
+      <button onClick={onClearData}>Clear Data</button>
+      <div
+        className="data-container"
+        style={{ backgroundColor: "blue", color: "white" }}
+      >
+        {data.map((element) => (
+          <div key={element.id}>{element.value}</div>
+        ))}
+      </div>
     </div>
   );
 }
